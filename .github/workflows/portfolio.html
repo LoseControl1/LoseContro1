@@ -1,0 +1,337 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Lose_Contro1 - Портфолио</title>
+    <style>
+        /* Базовые стили */
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        body {
+            background: linear-gradient(360deg, #0d0121, #15004b);
+            color: #ffffff;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+        }
+
+        .main-container {
+            display: flex;
+            flex-direction: column;
+            width: 100%;
+            max-width: 800px;
+            background: #12121c;
+            border-radius: 16px;
+            box-shadow: 0 0 30px rgba(0, 255, 255, 0.2), 0 0 60px rgba(255, 0, 128, 0.1);
+            overflow: hidden;
+            border: 1px solid #222235;
+        }
+
+        /* Навигационное меню */
+        .site-nav {
+            display: flex;
+            justify-content: center;
+            background: #18002c;
+            border-bottom: 2px solid #222235;
+            padding: 15px 0;
+            gap: 15px;
+        }
+
+        .nav-btn {
+            padding: 10px 20px;
+            color: #ffffff;
+            text-decoration: none;
+            font-weight: bold;
+            border-radius: 6px;
+            transition: all 0.3s ease;
+            border: 1px solid transparent;
+        }
+
+        .nav-btn:hover {
+            color: #00ffff;
+            border-color: #00ffff;
+            box-shadow: 0 0 10px rgba(0, 255, 255, 0.3);
+        }
+
+        .nav-btn.active {
+            background: #00ffff;
+            color: #000;
+            box-shadow: 0 0 15px #00ffff;
+        }
+
+        .content-wrapper {
+            display: flex;
+            width: 100%;
+        }
+
+        /* Карточка портфолио */
+        .portfolio-card {
+            flex: 1;
+            background: linear-gradient(145deg, #18002c 0%, #00122c 50%, #16006c 100%);
+            color: #fff;
+            padding: 40px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        .page-title {
+            font-size: 26px;
+            margin-bottom: 5px;
+            font-weight: 800;
+            text-shadow: 0 0 10px rgba(255, 255, 255, 0.5);
+            text-align: center;
+        }
+
+        .page-tag {
+            font-size: 14px;
+            color: #00d0ff;
+            text-transform: uppercase;
+            letter-spacing: 2px;
+            font-weight: bold;
+            margin-bottom: 25px;
+            text-shadow: 0 0 8px #00d0ff;
+            text-align: center;
+        }
+
+        /* Галерея из 2 колонок */
+        .portfolio-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 20px;
+            width: 100%;
+            max-height: 480px;
+            overflow-y: auto;
+            padding-right: 8px;
+        }
+
+        .portfolio-item {
+            position: relative;
+            border-radius: 10px;
+            overflow: hidden;
+            border: 2px solid #222235;
+            aspect-ratio: 1 / 1;
+            transition: all 0.3s ease;
+            background: #0d0121;
+        }
+
+        /* Обертка-ссылка для триггера Lightbox */
+        .lightbox-trigger {
+            display: block;
+            width: 100%;
+            height: 100%;
+            cursor: pointer;
+        }
+
+        .portfolio-item img {
+            width: 100%;
+            height: 100%;
+            object-fit: cover;
+            display: block;
+            transition: transform 0.3s ease;
+        }
+
+        .portfolio-item:hover {
+            border-color: #00d5ff;
+            box-shadow: 0 0 15px rgba(0, 213, 255, 0.6);
+            transform: translateY(-3px);
+        }
+
+        .portfolio-item:hover img {
+            transform: scale(1.03);
+        }
+
+        /* Кастомизация встроенного скроллбара */
+        .portfolio-grid::-webkit-scrollbar {
+            width: 6px;
+        }
+        .portfolio-grid::-webkit-scrollbar-track {
+            background: rgba(18, 18, 28, 0.5);
+            border-radius: 10px;
+        }
+        .portfolio-grid::-webkit-scrollbar-thumb {
+            background: #00d5ff;
+            border-radius: 10px;
+            box-shadow: 0 0 8px #006eff;
+        }
+
+        /* --- СТИЛИ ДЛЯ МОДАЛЬНОГО ОКНА (LIGHTBOX) --- */
+        .lightbox-overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(10, 2, 28, 0.9); /* Темный неоновый полупрозрачный фон */
+            display: none; /* Переключается скриптом на 'flex' */
+            justify-content: center;
+            align-items: center;
+            z-index: 9999;
+            padding: 20px;
+            transition: background 0.3s ease;
+        }
+
+        .lightbox-image {
+            max-width: 90%;
+            max-height: 85vh;
+            object-fit: contain;
+            border-radius: 8px;
+            border: 2px solid #00ffff;
+            box-shadow: 0 0 25px rgba(0, 255, 255, 0.4);
+            animation: fadeIn 0.3s ease-in-out;
+        }
+
+        .close-btn {
+            position: absolute;
+            top: 20px;
+            right: 30px;
+            font-size: 50px;
+            font-weight: 300;
+            color: #ffffff;
+            cursor: pointer;
+            transition: all 0.2s ease;
+            user-select: none;
+        }
+
+        .close-btn:hover {
+            color: #00ffff;
+            text-shadow: 0 0 15px #00ffff;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: scale(0.95); }
+            to { opacity: 1; transform: scale(1); }
+        }
+
+        @media (max-width: 580px) {
+            .portfolio-grid {
+                grid-template-columns: 1fr;
+                max-height: none;
+            }
+            .portfolio-card {
+                padding: 20px;
+            }
+            .close-btn {
+                top: 10px;
+                right: 20px;
+                font-size: 40px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="main-container">
+        <!-- Меню переключения страниц -->
+        <nav class="site-nav">
+            <a href="index.html" class="nav-btn">Главная</a>
+            <a href="portfolio.html" class="nav-btn active">Портфолио</a>
+            <a href="contacts.html" class="nav-btn">Контакты</a>
+        </nav>
+
+        <div class="content-wrapper">
+            <div class="portfolio-card">
+                <h1 class="page-title">МОЕ ПОРТФОЛИО</h1>
+                <div class="page-tag">Recent Artworks & Designs</div>
+
+                <!-- Блок галереи из двух колонок -->
+                <div class="portfolio-grid">
+                    
+                    <!-- Карточка работы 1 -->
+                    <div class="portfolio-item">
+                        <a href="#" class="lightbox-trigger" data-img="https://i.ibb.co/tTXzmZc6/03.png">
+                            <img src="https://i.ibb.co/tTXzmZc6/03.png" alt="Artwork 1">
+                        </a>
+                    </div>
+
+                    <!-- Карточка работы 2 -->
+                    <div class="portfolio-item">
+                        <a href="#" class="lightbox-trigger" data-img="https://i.ibb.co/ksJT2hRQ/friskey-01.png">
+                            <img src="https://i.ibb.co/ksJT2hRQ/friskey-01.png" alt="Artwork 2">
+                        </a>
+                    </div>
+
+                    <!-- Карточка работы 3 -->
+                    <div class="portfolio-item">
+                        <a href="#" class="lightbox-trigger" data-img="https://i.ibb.co/KjLZ75Dp/04.png">
+                            <img src="https://i.ibb.co/KjLZ75Dp/04.png" alt="Artwork 3">
+                        </a>
+                    </div>
+
+                    <!-- Карточка работы 4 -->
+                    <div class="portfolio-item">
+                        <a href="#" class="lightbox-trigger" data-img="https://i.ibb.co/bV77NKD/His-gaze12.png">
+                            <img src="https://i.ibb.co/bV77NKD/His-gaze12.png" alt="Artwork 4">
+                        </a>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Модальное окно (По умолчанию скрыто в CSS) -->
+    <div class="lightbox-overlay" id="lightbox">
+        <span class="close-btn" id="closeLightbox">&times;</span>
+        <img src="" alt="Full-size image" class="lightbox-image" id="lightboxImage" />
+    </div>
+
+   <!-- Логика работы модального окна (Исправленная) -->
+    <script>
+        // Ждем, пока вся страница и теги полностью загрузятся в браузере
+        document.addEventListener('DOMContentLoaded', () => {
+            const lightbox = document.getElementById('lightbox');
+            const lightboxImage = document.getElementById('lightboxImage');
+            const closeBtn = document.getElementById('closeLightbox');
+
+            // Проверяем, существуют ли элементы на странице, чтобы избежать ошибок
+            if (!lightbox || !lightboxImage || !closeBtn) {
+                console.error("Критические элементы Lightbox не найдены в HTML разметке.");
+                return;
+            }
+
+            // Открыть по клику на ссылку с изображением
+            document.querySelectorAll('.lightbox-trigger').forEach(link => {
+                link.addEventListener('click', e => {
+                    e.preventDefault(); // Отменяем стандартный переход по ссылке #
+                    const imgSrc = link.getAttribute('data-img');
+                    
+                    if (imgSrc) {
+                        lightboxImage.src = imgSrc;
+                        lightbox.style.display = 'flex';
+                    }
+                });
+            });
+
+            // Функция закрытия окна
+            const closeLightboxWindow = () => {
+                lightbox.style.display = 'none';
+                lightboxImage.src = ''; // Очищаем путь, чтобы картинка не «мигала» при следующем открытии
+            };
+
+            // Закрыть при клике на крестик
+            closeBtn.addEventListener('click', closeLightboxWindow);
+
+            // Закрыть при клике по фону за пределами изображения
+            lightbox.addEventListener('click', e => {
+                if (e.target === lightbox) {
+                    closeLightboxWindow();
+                }
+            });
+
+            // Закрытие по клавише Esc на клавиатуре
+            window.addEventListener('keydown', e => {
+                if (e.key === 'Escape' && lightbox.style.display === 'flex') {
+                    closeLightboxWindow();
+                }
+            });
+        });
+    </script>
